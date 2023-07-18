@@ -54,7 +54,7 @@ ul {
 
   /* Display the list as a 3 column and three row grid */
   display: grid;
-  grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+  grid-template: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr / 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 
   /* Add a little gap between to allow the background color through */
   gap: 1rem;
@@ -91,6 +91,4 @@ ul li.small {
 
 ul li.not-allowed-click {
   background-color: red;
-}
-
 }
