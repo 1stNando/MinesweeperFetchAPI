@@ -42,7 +42,11 @@ export function App() {
 
   return (
     <div>
-      <h1> Minesweeper API</h1>
+      <h1>
+        {' '}
+        Minesweeper API -{' '}
+        <button onClick={handleNewGame}>Click here to START</button>
+      </h1>
       <ul>
         <li onClick={() => handleClickCell(0, 0)}>{game.board[0][0]}</li>
         <li onClick={() => handleClickCell(0, 1)}>{game.board[0][1]}</li>
