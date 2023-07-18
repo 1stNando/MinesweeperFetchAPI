@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 
 export function App() {
-  // Begin by defining the state of the game grid based on the response we expect to receive from the API. 8x8 grid.
+  // Step 1: static implementation
+  //Begin by defining the state of the game grid based on the response we expect to receive from the API. 8x8 grid.
   const [game, setGame] = useState({
     board: [
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],

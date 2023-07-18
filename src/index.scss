@@ -57,7 +57,7 @@ ul {
   grid-template: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr / 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 
   /* Add a little gap between to allow the background color through */
-  gap: 1rem;
+  gap: 0.25rem;
 
   /* Set the background color that will show through the gap */
   background-color: var(--square-text-color);
