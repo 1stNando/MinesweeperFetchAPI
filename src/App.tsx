@@ -24,6 +24,22 @@ export function App() {
     console.log(`You hace clicked on row ${row} and column ${column}`)
   }
 
+  // Step 1.2 Define a function to create a new game by fetching from the API
+  async function handleNewGame() {
+    const response = await fetch(
+      'https://minesweeper-api.herokuapp.com/games',
+      {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+      }
+    )
+
+    if (response.ok) {
+      const newGame = await response.json()
+      setGame(newGame)
+    }
+  }
+
   return (
     <div>
       <h1> Minesweeper API</h1>
