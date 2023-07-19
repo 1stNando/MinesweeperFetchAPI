@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 export function App() {
   // Step 1: static implementation
   //Begin by defining the state of the game grid based on the response we expect to receive from the API. 8x8 grid.
-  const [game, setGame] = useState({
+  const [game, setGame] = useState<Game>({
     board: [
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -19,13 +19,30 @@ export function App() {
     mines: null,
   })
 
+  // Declare types used:
+  type Cell = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | '*' | 'F' | ' ' | '_' | '@'
+  type Row = [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell]
+  type Board = [Row, Row, Row, Row, Row, Row, Row, Row]
+
+  type Game = {
+    board: Board
+    id: null | number
+    state: null | 'new' | 'playing' | 'won' | 'lost'
+    mines: null | number
+  }
+
   // Step 1.1 Define a function to handleClicks
   async function handleClickCell(row: number, column: number) {
+    // This is a guard clause to prevent clicking cells.
+    if (game.id === undefined || game.board[row][column] !== ' ') {
+      return
+    }
+
     // Check correct cells(optional)
-    console.log(`You hace clicked on row ${row} and column ${column}`)
+    console.log(`You have clicked on row ${row} and column ${column}`)
 
     // Generate the URL we need
-    const url = `https://sdg-tic-tac-toe-api.herokuapp.com/game/${game.id}`
+    const url = `https://sdg-tic-tac-toe-api.herokuapp.com/games/${game.id}/check`
 
     // Make an object to send as JSON
     const body = { row: row, column: column }
@@ -61,15 +78,30 @@ export function App() {
     }
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  const header = 'Minesweeper API -'
+
   return (
     <div>
       <h1>
-        {' '}
-        Minesweeper API -{' '}
+        {header}
         <button onClick={handleNewGame}>Click here to START</button>
       </h1>
       <ul>
-        <li onClick={() => handleClickCell(0, 0)}>{game.board[0][0]}</li>
+        {game.board.map((boardRow, rowIndex) => {
+          return boardRow.map((cell, columnIndex) => {
+            return (
+              <li
+                key={columnIndex}
+                className={cell === ' ' ? '' : 'taken'}
+                onClick={() => handleClickCell(rowIndex, columnIndex)}
+              >
+                {game.board[rowIndex][columnIndex]}
+              </li>
+            )
+          })
+        })}
+        {/* <li onClick={() => handleClickCell(0, 0)}>{game.board[0][0]}</li>
         <li onClick={() => handleClickCell(0, 1)}>{game.board[0][1]}</li>
         <li onClick={() => handleClickCell(0, 2)}>{game.board[0][2]}</li>
         <li onClick={() => handleClickCell(0, 3)}>{game.board[0][3]}</li>
@@ -93,6 +125,7 @@ export function App() {
         <li onClick={() => handleClickCell(2, 5)}>{game.board[2][5]}</li>
         <li onClick={() => handleClickCell(2, 6)}>{game.board[2][6]}</li>
         <li onClick={() => handleClickCell(2, 7)}>{game.board[2][7]}</li>
+
         <li onClick={() => handleClickCell(2, 0)}>{game.board[3][0]}</li>
         <li onClick={() => handleClickCell(3, 1)}>{game.board[3][1]}</li>
         <li onClick={() => handleClickCell(3, 2)}>{game.board[3][2]}</li>
@@ -132,7 +165,7 @@ export function App() {
         <li onClick={() => handleClickCell(7, 4)}>{game.board[7][4]}</li>
         <li onClick={() => handleClickCell(7, 5)}>{game.board[7][5]}</li>
         <li onClick={() => handleClickCell(7, 6)}>{game.board[7][6]}</li>
-        <li onClick={() => handleClickCell(7, 7)}>{game.board[7][7]}</li>
+        <li onClick={() => handleClickCell(7, 7)}>{game.board[7][7]}</li> */}
       </ul>
     </div>
   )
