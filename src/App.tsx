@@ -1,6 +1,18 @@
 import React, { useState } from 'react'
 
 export function App() {
+  // Declare types used:
+  type Cell = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | '*' | 'F' | ' ' | '_' | '@'
+  type Row = [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell]
+  type Board = [Row, Row, Row, Row, Row, Row, Row, Row]
+
+  type Game = {
+    board: Board
+    id: null | number
+    state: 'new' | 'playing' | 'won' | 'lost'
+    mines: null | number
+  }
+
   // Step 1: static implementation
   //Begin by defining the state of the game grid based on the response we expect to receive from the API. 8x8 grid.
   const [game, setGame] = useState<Game>({
@@ -19,40 +31,66 @@ export function App() {
     mines: null,
   })
 
-  // Declare types used:
-  type Cell = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | '*' | 'F' | ' ' | '_' | '@'
-  type Row = [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell]
-  type Board = [Row, Row, Row, Row, Row, Row, Row, Row]
+  // Define difficulty state
+  const [difficulty, setDifficulty] = useState<0 | 1 | 2>(0)
 
-  type Game = {
-    board: Board
-    id: null | number
-    state: null | 'new' | 'playing' | 'won' | 'lost'
-    mines: null | number
+  const [game, setGame] = useState<Game | null>(null)
+
+  // Step 1.2 Define a function to create a new game by fetching from the API
+  async function handleNewGame(newGameDifficulty: 0 | 1 | 2) {
+    const gameOptions = { difficulty: newGameDifficulty }
+
+    const url = 'https://minesweeper-api.herokuapp.com/games'
+
+    const fetchOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(gameOptions),
+    }
+
+    const response = await fetch(url, fetchOptions)
+
+    // Check point
+    console.log(response)
+
+    if (response.ok) {
+      const newGame = (await response.json()) as Game
+      setGame(newGame)
+      setDifficulty(newGameDifficulty)
+    }
   }
 
   // Step 1.1 Define a function to handleClicks
-  async function handleClickCell(row: number, column: number) {
+  async function handleClickCell(
+    row: number,
+    col: number,
+    action: 'check' | 'flag'
+  ) {
     // This is a guard clause to prevent clicking cells.
-    if (game.id === undefined || game.board[row][column] !== ' ') {
+    if (!game || game.board[row][col] !== ' ') {
       return
     }
-
     // Check correct cells(optional)
-    console.log(`You have clicked on row ${row} and column ${column}`)
+    console.log(`You have clicked on row ${row} and column ${col}`)
+
+    ///////////////////
+    const checkOptions = {
+      id: game.id,
+      row,
+      col,
+    }
 
     // Generate the URL we need
-    const url = `https://sdg-tic-tac-toe-api.herokuapp.com/games/${game.id}/check`
+    const url = `https://sdg-tic-tac-toe-api.herokuapp.com/games/${game.id}/${action}`
 
-    // Make an object to send as JSON
-    const body = { row: row, column: column }
+    const fetchOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(checkOptions),
+    }
 
     // Make a POST request to make a move
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(body),
-    })
+    const response = await fetch(url, fetchOptions)
     if (response.ok) {
       // Get the response back as JSON
       const newGame = await response.json()
@@ -62,19 +100,37 @@ export function App() {
     }
   }
 
-  // Step 1.2 Define a function to create a new game by fetching from the API
-  async function handleNewGame() {
-    const response = await fetch(
-      'https://minesweeper-api.herokuapp.com/games',
-      {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-      }
-    )
+  function transformCellValue(value: string | number) {
+    if (value === 'F') {
+      return <i className="fa fa-flag" />
+    }
 
-    if (response.ok) {
-      const newGame = await response.json()
-      setGame(newGame)
+    if (value === '_') {
+      return ' '
+    }
+
+    if (value === '*') {
+      return <i className="fa fa-bomb" />
+    }
+    return value
+  }
+
+  function transformCellClassName(value: string | number) {
+    switch (value) {
+      case 'F':
+        return 'cell-flag'
+
+      case '*':
+        return 'cell-bomb'
+
+      case '_':
+        return 'cell-free'
+
+      case ' ':
+        return undefined
+
+      default:
+        return `cell-number cell-${value}`
     }
   }
 
@@ -83,24 +139,43 @@ export function App() {
 
   return (
     <div>
-      <h1>
-        {header}
-        <button onClick={handleNewGame}>Click here to START</button>
-      </h1>
+      <h1>{header}</h1>
+
+      <p>Instructions: Select the difficulty level to begin.</p>
+      <h2>
+        <button onClick={() => handleNewGame(0)}>EASY</button>
+        <button className="new-game" onClick={() => handleNewGame(1)}>
+          MEDIUM
+        </button>
+        <button onClick={() => handleNewGame(2)}>HARD</button>
+      </h2>
+      <h3>
+        Game ID:{game.id}, containing {game.mines} mines. Difficulty:
+        {difficulty}
+      </h3>
       <ul>
-        {game.board.map((boardRow, rowIndex) => {
-          return boardRow.map((cell, columnIndex) => {
+        {game.board.map(function (gameRow, row) {
+          return gameRow.map(function (square, col) {
             return (
-              <li
-                key={columnIndex}
-                className={cell === ' ' ? '' : 'taken'}
-                onClick={() => handleClickCell(rowIndex, columnIndex)}
+              <button
+                className={transformCellClassName(square)}
+                onClick={function (event) {
+                  event.preventDefault()
+                  handleClickCell(row, col, 'check')
+                }}
+                onContextMenu={function (event) {
+                  event.preventDefault()
+
+                  handleClickCell(row, col, 'flag')
+                }}
+                key={col}
               >
-                {game.board[rowIndex][columnIndex]}
-              </li>
+                {transformCellValue(square)}
+              </button>
             )
           })
         })}
+
         {/* <li onClick={() => handleClickCell(0, 0)}>{game.board[0][0]}</li>
         <li onClick={() => handleClickCell(0, 1)}>{game.board[0][1]}</li>
         <li onClick={() => handleClickCell(0, 2)}>{game.board[0][2]}</li>
