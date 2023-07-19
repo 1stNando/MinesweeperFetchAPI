@@ -133,7 +133,7 @@ export function App() {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  const header = 'Minesweeper API -'
+  const header = game.state ? `You have ${game.state}` : 'Minesweeper API -'
 
   return (
     <div>
