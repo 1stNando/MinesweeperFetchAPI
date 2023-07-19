@@ -5,7 +5,9 @@
   --header-font-size: 2rem;
   --square-font-size: calc(8 * var(--header-font-size));
   --square-text-color: #5661b3;
-  --square-background-color: #e6e8ff;
+  //--square-background-color: #e6e8ff;
+  background: teal url(https://assets.codepen.io/15664/bliss.jpg) center / cover
+    no-repeat;
   --square-border: 3px solid var(--square-text-color);
 
   font: 16px / 1 sans-serif;
@@ -18,6 +20,11 @@ html {
 body {
   margin: 0;
   min-height: 100%;
+  width: auto;
+
+  margin-left: 15rem;
+  margin-right: 15rem;
+  margin-top: 5rem;
 }
 
 h1 {
@@ -27,19 +34,20 @@ h1 {
   /* Use a sans serif font with a little spacing and color */
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   letter-spacing: 0.4rem;
-  font-size: var(--header-font-size);
-  color: var(--header-text-color);
+  font-size: 25px;
+  color: black;
+  width: 65vw;
 
   /* Remove margins and set a little padding */
-  margin: 0;
+
   padding: var(--header-font-size);
 
   /* Set a background color for the header */
-  background-color: var(--header-background);
 }
 
 ul,
 li {
+  // This adjusts the main UL and the children(li) looks!!!
   /* Be gone margins! */
   margin: 0;
   padding: 0;
@@ -49,27 +57,32 @@ li {
 }
 
 ul {
-  /* Make the height of the list equal to the height of the page MINUS the height taken by the header */
-  height: calc(100vh - 3 * var(--header-font-size));
-
-  /* Display the list as a 3 column and three row grid */
+  /* Display the list as a 8 column and  row grid */
   display: grid;
-  grid-template: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr / 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr / 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 
   /* Add a little gap between to allow the background color through */
   gap: 0.25rem;
 
   /* Set the background color that will show through the gap */
-  background-color: var(--square-text-color);
+  //background-color: var(--square-text-color);
+
+  border-top-width: medium;
+  border-right-width: medium;
+  border-bottom-width: medium;
+  border-left-width: medium;
+  border-width: 0 1px 1px 0;
+  width: 70vw;
+  height: 85vh;
 }
 
 ul li {
   /* Use a monospace font */
   font-family: monospace;
-  font-size: var(--square-font-size);
+  font-size: 24px;
 
   /* Style the background color of the item */
-  background-color: var(--square-background-color);
+  background-color: rgb(212, 209, 209); //var(--square-background-color);
 
   /* Make the cursor a pointer by default */
   cursor: pointer;
@@ -79,6 +92,12 @@ ul li {
   align-items: center;
   justify-content: center;
   transition: 1s font-size ease-in-out;
+
+  // Adjust size/////////////
+  border: solid blue 2px;
+
+  height: auto;
+  width: auto;
 }
 
 ul li.taken {
