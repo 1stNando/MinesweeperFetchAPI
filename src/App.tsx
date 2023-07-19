@@ -20,8 +20,29 @@ export function App() {
   })
 
   // Step 1.1 Define a function to handleClicks
-  function handleClickCell(row: number, column: number) {
+  async function handleClickCell(row: number, column: number) {
+    // Check correct cells(optional)
     console.log(`You hace clicked on row ${row} and column ${column}`)
+
+    // Generate the URL we need
+    const url = `https://sdg-tic-tac-toe-api.herokuapp.com/game/${game.id}`
+
+    // Make an object to send as JSON
+    const body = { row: row, column: column }
+
+    // Make a POST request to make a move
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    if (response.ok) {
+      // Get the response back as JSON
+      const newGame = await response.json()
+
+      // Set the new game state!
+      setGame(newGame)
+    }
   }
 
   // Step 1.2 Define a function to create a new game by fetching from the API
@@ -57,7 +78,7 @@ export function App() {
         <li onClick={() => handleClickCell(0, 6)}>{game.board[0][6]}</li>
         <li onClick={() => handleClickCell(0, 7)}>{game.board[0][7]}</li>
         <li onClick={() => handleClickCell(1, 0)}>{game.board[1][0]}</li>
-        <li onClick={() => handleClickCell(1, 1)}>{game.board[1][1]}X</li>
+        <li onClick={() => handleClickCell(1, 1)}>{game.board[1][1]}</li>
         <li onClick={() => handleClickCell(1, 2)}>{game.board[1][2]}</li>
         <li onClick={() => handleClickCell(1, 3)}>{game.board[1][3]}</li>
         <li onClick={() => handleClickCell(1, 4)}>{game.board[1][4]}</li>
