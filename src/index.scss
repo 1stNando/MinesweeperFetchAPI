@@ -113,3 +113,12 @@ section li.small {
 section li.not-allowed-click {
   background-color: red;
 }
+
+.cell-free {
+  background-color: rgb(168, 165, 165);
+  cursor: not-allowed;
+}
+.cell-number {
+  background-color: rgb(107, 107, 107);
+  cursor: not-allowed;
+}
