@@ -88,7 +88,7 @@ export function App() {
     }
   }
 
-  function transformCellValue(value: string | number) {
+  function transformCellValue(value: string | Cell) {
     if (value === 'F') {
       return <i className="fa fa-flag" />
     }
@@ -159,35 +159,44 @@ export function App() {
       <p>Instructions: Select the difficulty level to begin!!!</p>
       <h2>
         <button className="new-game" onClick={() => handleNewGame(0)}>
-          EASY
+          EASY Mode
         </button>
+        <button className="new-game" onClick={() => handleNewGame(1)}>
+          MEDIUM Mode
+        </button>
+        <button className="new-game" onClick={() => handleNewGame(2)}>
+          HARD Mode
+        </button>
+        {/* NOTE: These buttons are starting a new game correctly, but the way the game board is being rendered needs work to display properly. As of now they are not properly rendering to the right size.  */}
       </h2>
       <h3>
         Game ID:{game.id}, containing {game.mines} mines. Difficulty:
         {difficulty}
       </h3>
-      <section className={`difficulty-${difficulty}`}>
-        {game.board.map(function (gameRow, row) {
-          return gameRow.map(function (square, col) {
-            return (
-              <button
-                className={transformCellClassName(square)}
-                onClick={function (event) {
-                  event.preventDefault()
-                  handleClickCell(row, col, 'check')
-                }}
-                onContextMenu={function (event) {
-                  event.preventDefault()
+      <section className="board-box">
+        <section className={`difficulty-${difficulty}`}>
+          {game.board.map(function (gameRow, row) {
+            return gameRow.map(function (square, col) {
+              return (
+                <button
+                  className={transformCellClassName(square)}
+                  onClick={function (event) {
+                    event.preventDefault()
+                    handleClickCell(row, col, 'check')
+                  }}
+                  onContextMenu={function (event) {
+                    event.preventDefault()
 
-                  handleClickCell(row, col, 'flag')
-                }}
-                key={col}
-              >
-                {transformCellValue(square)}
-              </button>
-            )
-          })
-        })}
+                    handleClickCell(row, col, 'flag')
+                  }}
+                  key={col}
+                >
+                  {transformCellValue(square)}
+                </button>
+              )
+            })
+          })}
+        </section>
       </section>
     </div>
   )
